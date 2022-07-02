@@ -1,0 +1,6 @@
+// tc, err := CreateTemplateCache()
+	// if err != nil {
+	// 	fmt.Println("Error rendering template:", err)
+	// 	log.Fatal(err)
+	// 	return
+	// }

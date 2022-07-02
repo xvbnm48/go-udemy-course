@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/xvbnm48/go-udemy-course/pkg/config"
+	"github.com/xvbnm48/go-udemy-course/pkg/models"
 )
 
 var functions = template.FuncMap{}
@@ -19,25 +20,30 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-// renderTemplate is a helper function for rendering HTML templates
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	// get the template cache from the app config
-	tc := app.TemplateCache
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+	return td
+}
 
-	// tc, err := CreateTemplateCache()
-	// if err != nil {
-	// 	fmt.Println("Error rendering template:", err)
-	// 	log.Fatal(err)
-	// 	return
-	// }
+// renderTemplate is a helper function for rendering HTML templates
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+	// get the template cache from the app config
+	var tc map[string]*template.Template
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
+	}
 
 	t, ok := tc[tmpl]
 	if !ok {
 		log.Fatal("cannot get template from template cache")
 	}
 
+	td = AddDefaultData(td)
+
 	buff := new(bytes.Buffer)
-	_ = t.Execute(buff, nil)
+
+	_ = t.Execute(buff, td)
 	_, err := buff.WriteTo(w)
 	if err != nil {
 		fmt.Println("error waiting project")
