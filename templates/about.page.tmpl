@@ -9,6 +9,13 @@
       <p>dan aruno juga sangat cantik sekali dan imut</p>
 
       <p>this came from the template: {{ index .StringMap "test"}}</p>
+      <p>
+        {{ if ne (index .StringMap "remoteIP") ""}}
+        You remote IP address is {{ index .StringMap "remoteIP"}}
+        {{else}}
+        You remote IP address is unknown, visit the , <a href="/">Homepage</a>
+        {{ end }}
+      </p>
     </div>
   </div>
 </div>

@@ -14,14 +14,20 @@ func WriteToConsole(next http.Handler) http.Handler {
 	})
 }
 
+// NOSurf prevents CSRF to all POST requests
 func NoSurf(next http.Handler) http.Handler {
 	crsfHandler := nosurf.New(next)
 
 	crsfHandler.SetBaseCookie(http.Cookie{
 		HttpOnly: true,
 		Path:     "/",
-		Secure:   false,
+		Secure:   app.InProduction,
 		SameSite: http.SameSiteStrictMode,
 	})
 	return crsfHandler
+}
+
+//SessionLoad loads and serve the session on any request
+func SessionLoad(next http.Handler) http.Handler {
+	return session.LoadAndSave(next)
 }
